@@ -15,7 +15,7 @@
 */
 
 
- 
+
 
 
 // [START pubsub_quickstart]
