@@ -3,6 +3,8 @@ Created by melody on 12/16/16.
 
 */
 
+import com.google.appengine.api.taskqueue.QueueFactory;
+import com.google.appengine.api.taskqueue.TaskOptions;
 import com.google.cloud.pubsub.*;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -34,11 +36,16 @@ class messageRecthread extends Thread {
             for(int i = 0; i < 20; i++)
             {
             Iterator<ReceivedMessage> messages = pubsub.pull("sub"+i, 499);
+                com.google.appengine.api.taskqueue.Queue queue = QueueFactory.getDefaultQueue();
 // Ack deadline is renewed until the message is consumed
             while (messages.hasNext()) {
                 ReceivedMessage message = messages.next();
                 // System.out.println(message.getPayloadAsString());
                 // do something with message and ack/nack it
+                String newMessage = message.getPayloadAsString();
+                String content = "content";
+                String process = "/process";
+                queue.add(TaskOptions.Builder.withUrl(process).param(content, newMessage));
                 message.ack(); // or message.nack()
 
             }
